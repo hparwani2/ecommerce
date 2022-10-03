@@ -1,9 +1,8 @@
 const { sequelize } = require('../connections/sequelize.connection');
 const { DataTypes } = require("sequelize");
-const { productSchema } = require("./product.model");
 
-function initializeCategorySchema() {
-    const categorySchema = sequelize.define("category", {
+function initializeProductSchema() {
+    const productSchema = sequelize.define("product", {
         id: {
             type: DataTypes.TINYINT,
             allowNull: false,
@@ -14,25 +13,26 @@ function initializeCategorySchema() {
             type: DataTypes.STRING,
             allowNull: false
         },
+        price: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            defaultValue: 0.0
+        },
+        category_id: {
+            type: DataTypes.TINYINT,
+            allowNull: false
+        },
         created_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.fn('NOW')
         }
     });
 
-    categorySchema.hasMany(productSchema, {
-        foreignKey: 'category_id'
-    });
-
-    productSchema.belongsTo(categorySchema, {
-        foreignKey: 'category_id'
-    });
-
-    return categorySchema;
+    return productSchema;
 }
 
-let categorySchema = initializeCategorySchema();
+let productSchema = initializeProductSchema();
 
 module.exports = {
-    categorySchema
+    productSchema
 }
