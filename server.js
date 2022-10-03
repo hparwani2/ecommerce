@@ -5,9 +5,8 @@ const express = require('express');
 const serverConfig = require('./configs/server.config');
 const { categoryRouter } = require('./controllers/category.controller');
 const bodyParser = require('body-parser');
-app.use(bodyParser.json());
-
 const app = express();
+app.use(bodyParser.json());
 app.use('/category', categoryRouter);
 
 // app.get('/', function(request, response) {

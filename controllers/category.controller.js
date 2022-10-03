@@ -7,7 +7,9 @@ let { executeWithSync } = require('../connections/sequelize.connection');
 categoryRouter.get('/', function(request, response) {
     executeWithSync(categoryService
     .getCategories()
-    .then((data) => data.map((single) => single.dataValue))
+    .then((data) => {
+        return data.map((single) => single.dataValues)
+    })
     .then((data) => {
         response.setHeader('content-type', 'application/json');
         response.writeHead(200);
@@ -25,11 +27,10 @@ categoryRouter.get('/', function(request, response) {
 categoryRouter.post('/', function(request, response) {
     executeWithSync(categoryService
     .createCategories(request.body)
-    .then((data) => data.map((single) => single.dataValue))
     .then((data) => {
         response.setHeader('content-type', 'application/json');
         response.writeHead(200);
-        response.end(JSON.stringify(data));
+        response.end(JSON.stringify(data.dataValues));
     }).catch((error) => {
         response.setHeader('content-type', 'application/json');
         response.writeHead(500);
