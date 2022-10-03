@@ -13,10 +13,17 @@ class ProductService {
         .create(product);
     }
 
-    getProducts() {
+    getProducts(filters) {
+        filters['maxprice'] = Number(filters['maxprice']);
+
         return this
         .schema
         .findAll({
+            where: {
+                price: {
+                    lte: 2000
+                }
+            },
             include: [{
                 required: true,
                 model: categorySchema

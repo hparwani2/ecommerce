@@ -6,22 +6,23 @@ let { executeWithSync } = require('../connections/sequelize.connection');
 
 productRouter.get('/', function(request, response) {
     executeWithSync(productService
-    .getProducts()
-    .then((data) => {
-        return data.map((single) => single.dataValues)
-    })
-    .then((data) => {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(200);
-        response.end(JSON.stringify(data));
-    }).catch((error) => {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(500);
-        console.log('Error Occurred while fetching products');
-        response.end(JSON.stringify({
-            message: 'error occured'
+        .getProducts(request.query)
+        .then((data) => {
+            return data.map((single) => single.dataValues)
+        })
+        .then((data) => {
+            response.setHeader('content-type', 'application/json');
+            response.writeHead(200);
+            response.end(JSON.stringify(data));
+        }).catch((error) => {
+            response.setHeader('content-type', 'application/json');
+            response.writeHead(500);
+            console.log('Error Occurred while fetching products');
+            response.end(JSON.stringify({
+                message: 'error occured'
+            }));
         }));
-    }));
+    
 });
 
 productRouter.get('/:id', function(request, response) {
