@@ -31,7 +31,7 @@ function create(request, response) {
 
 function findAll(request, response) {
     productService
-    .getProducts()
+    .getProducts(request.query)
     .then((products) => products.map((product) => product.dataValues))
     .then((products) => {
         console.log('product fetched', products);
@@ -86,6 +86,7 @@ function update(request, response) {
         name: request.body.name,
         categoryId: request.body.categoryId
     }
+    
     productService
     .updateProduct(product, productId)
     .then((data) => {

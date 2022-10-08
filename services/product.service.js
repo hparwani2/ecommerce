@@ -12,17 +12,31 @@ class ProductService {
         .create(product);
     }
 
-    getProducts() {
-        //filters['maxprice'] = Number(filters['maxprice']);
+    getProducts(filters) {
+        filters = this.buildFilters(filters);
 
-        return this
-        .schema
-        .findAll({
-            include: [{
-                required: true,
-                model: db.category
-            }]
-        });
+        if(Object.keys(filters).length) {
+            return this
+            .schema
+            .findAll({
+                where: filters['product'],
+                include: [{
+                    required: true,
+                    model: db.category,
+                    where: filters['category']
+                }]
+            });
+        } else {
+            return this
+            .schema
+            .findAll({
+                include: [{
+                    required: true,
+                    model: db.category,
+                }]
+            });
+        }
+        
     }
 
     getProductById(id) {
@@ -58,6 +72,41 @@ class ProductService {
                 id: id
             }
         });
+    }
+
+    buildFilters(filters) {
+        let obj = {
+            product: {
+
+            },
+            category: {
+
+            }
+        }
+        if(filters.product && filters.product.minCost && filters.product.maxCost) {
+            obj['product']['cost'] = {
+                [db.Sequelize.Op.gte]: Number(filters.product.minCost),
+                [db.Sequelize.Op.lte]: Number(filters.product.maxCost)
+            }
+        } else if(filters.product && filters.product.minCost) {
+            obj['product']['cost'] = {
+                [db.Sequelize.Op.gte]: Number(filters.product.minCost)
+            }
+        } else if(filters.product && filters.product.maxCost) {
+            obj['product']['cost'] = {
+                [db.Sequelize.Op.lte]: Number(filters.product.maxCost)
+            }
+        }
+
+        if(filters.product && filters.product.categoryId) {
+            obj['product']['categoryId'] = filters.product.categoryId;
+        }
+
+        if(filters.category && filters.category.name) {
+            obj['category']['name'] = filters.category.name;
+        }
+
+        return obj;
     }
 }
 
