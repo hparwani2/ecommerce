@@ -4,3 +4,8 @@
 2. primary and foriegn key
 3. classes -> inheritence(prototype), constructors, getter and setters
 5. Doubts.
+
+8/10/22
+
+1. filters
+2. validations

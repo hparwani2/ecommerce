@@ -3,14 +3,6 @@ let { productService } = require('../services/product.service');
 
 function create(request, response) {
 
-    if(!request.body.name) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'either body is not correct or present'
-        }));
-    }
-
     const product = {
         name: request.body.name,
         description: request.body.description,
@@ -60,16 +52,8 @@ function findAll(request, response) {
 }
 
 function findOne(request, response) {
-    
     let productId = Number(request.params.id);
 
-    if(!productId) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'productId is either undefined or NaN'
-        }));
-    }
     productService
     .getProductById(productId)
     .then((product) => {
@@ -97,22 +81,6 @@ function findOne(request, response) {
 function update(request, response) {
 
     let productId = Number(request.params.id);
-
-    if(!productId) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'productId is either undefined or NaN'
-        }));
-    }
-
-    if(!request.body.name) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'body should be present'
-        }));
-    }
 
     let product = {
         name: request.body.name,
@@ -156,14 +124,6 @@ function update(request, response) {
 function deleteProduct(request, response) {
     
     let productId = Number(request.params.id);
-
-    if(!productId) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'productId is either undefined or NaN'
-        }));
-    }
     productService
     .deleteProductById(productId)
     .then((product) => {

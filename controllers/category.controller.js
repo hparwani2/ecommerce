@@ -2,15 +2,7 @@ let { categoryService } = require('../services/category.service');
 
 
 function create(request, response) {
-
-    if(!request.body.name) {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(400);
-        response.end(JSON.stringify({
-            message: 'either body is not correct or present'
-        }));
-    }
-
+    
     const category = {
         name: request.body.name,
         description: request.body.description,

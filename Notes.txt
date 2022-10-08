@@ -17,3 +17,11 @@ primary key of another table.
 used for joining two or more tables.
 
 
+4. 
+oneToOne --> Person <-----> Aadhar
+oneToMany ---> father <----> children
+ManyToMany ----> Teacher <----> Students
+
+
+
+route -----> controllers(validations) ----> 
