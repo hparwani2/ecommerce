@@ -1,71 +1,196 @@
-let express = require('express');
-let productRouter = express.Router();
-
 let { productService } = require('../services/product.service');
-let { executeWithSync } = require('../connections/sequelize.connection');
 
-productRouter.get('/', function(request, response) {
-    executeWithSync(productService
-        .getProducts(request.query)
-        .then((data) => {
-            return data.map((single) => single.dataValues)
-        })
-        .then((data) => {
-            response.setHeader('content-type', 'application/json');
-            response.writeHead(200);
-            response.end(JSON.stringify(data));
-        }).catch((error) => {
-            response.setHeader('content-type', 'application/json');
-            response.writeHead(500);
-            console.log('Error Occurred while fetching products');
-            response.end(JSON.stringify({
-                message: 'error occured'
-            }));
-        }));
-    
-});
 
-productRouter.get('/:id', function(request, response) {
-    executeWithSync(productService
-    .getProductById(request.params.id)
-    .then((data) => {
+function create(request, response) {
+
+    if(!request.body.name) {
         response.setHeader('content-type', 'application/json');
-        response.writeHead(200);
-        if(data !== null) {
-            response.end(JSON.stringify(data.dataValues));
-        } else {
-            response.end(JSON.stringify({
-                message: 'no product found'
-            }))
-        }  
-    }).catch((error) => {
-        response.setHeader('content-type', 'application/json');
-        response.writeHead(500);
-        console.log('Error Occurred while fetching products');
+        response.writeHead(400);
         response.end(JSON.stringify({
-            message: 'error occured'
+            message: 'either body is not correct or present'
         }));
-    }));
-});
+    }
 
-productRouter.post('/', function(request, response) {
-    executeWithSync(productService
-    .createProduct(request.body)
-    .then((data) => {
+    const product = {
+        name: request.body.name,
+        description: request.body.description,
+        cost: request.body.cost,
+        categoryId: request.body.categoryId
+    };
+
+    productService
+    .createProduct(product)
+    .then((product) => {
+        console.log('product inserted ', product.dataValues);
+        let returnValue = product.dataValues;
+        returnValue.message = 'Product inserted successfully';
         response.setHeader('content-type', 'application/json');
         response.writeHead(201);
-        response.end(JSON.stringify(data.dataValues));
+        response.end(JSON.stringify(returnValue));
     }).catch((error) => {
+        console.log('error occured while creating product', error);
         response.setHeader('content-type', 'application/json');
         response.writeHead(500);
-        console.log('Error Occurred while creating products');
         response.end(JSON.stringify({
             message: 'error occured'
         }));
-    }));
-});
+    });
+}
+
+function findAll(request, response) {
+    productService
+    .getProducts()
+    .then((products) => products.map((product) => product.dataValues))
+    .then((products) => {
+        console.log('product fetched', products);
+        let returnValue = products;
+        returnValue.message = 'Products Fetched successfully';
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(200);
+        response.end(JSON.stringify(returnValue));
+    })
+    .catch((error) => {
+        console.log('error occured while fetching products', error);
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(500);
+        response.end(JSON.stringify({
+            message: 'error occured'
+        }));
+    })
+}
+
+function findOne(request, response) {
+    
+    let productId = Number(request.params.id);
+
+    if(!productId) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(400);
+        response.end(JSON.stringify({
+            message: 'productId is either undefined or NaN'
+        }));
+    }
+    productService
+    .getProductById(productId)
+    .then((product) => {
+        console.log('product fetched', product);
+        let returnValue = product.dataValues;
+        if(returnValue) {
+            returnValue.message = 'Product Fetched successfully';
+        } else {
+            returnValue.message = 'No Product Found with given id';
+        }
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(200);
+        response.end(JSON.stringify(returnValue));
+    })
+    .catch((error) => {
+        console.log('error occured while fetching product', error);
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(500);
+        response.end(JSON.stringify({
+            message: 'error occured'
+        }));
+    });
+}
+
+function update(request, response) {
+
+    let productId = Number(request.params.id);
+
+    if(!productId) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(400);
+        response.end(JSON.stringify({
+            message: 'productId is either undefined or NaN'
+        }));
+    }
+
+    if(!request.body.name) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(400);
+        response.end(JSON.stringify({
+            message: 'body should be present'
+        }));
+    }
+
+    let product = {
+        name: request.body.name,
+        categoryId: request.body.categoryId
+    }
+    productService
+    .updateProduct(product, productId)
+    .then((data) => {
+        if(data[1] === 1) {
+            productService
+            .getProductById(productId)
+            .then((product) => {
+                console.log('product updated', product.dataValues);
+                let returnValue = product.dataValues;
+                returnValue.message = 'Product updated successfully';
+                response.setHeader('content-type', 'application/json');
+                response.writeHead(200);
+                response.end(JSON.stringify(returnValue));
+            }); 
+        } else {
+            console.log('product is not updated with id', productId);
+            response.setHeader('content-type', 'application/json');
+            response.writeHead(500);
+            response.end(JSON.stringify({
+                message: 'Product Doesnot exist'
+            }));
+        }
+        
+    })
+    .catch((error) => {
+        console.log('error occured while updating product', error);
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(500);
+        response.end(JSON.stringify({
+            message: 'error occured'
+        }));
+    })
+
+}
+
+function deleteProduct(request, response) {
+    
+    let productId = Number(request.params.id);
+
+    if(!productId) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(400);
+        response.end(JSON.stringify({
+            message: 'productId is either undefined or NaN'
+        }));
+    }
+    productService
+    .deleteProductById(productId)
+    .then((product) => {
+        console.log('product Deleted', product);
+        let returnValue = product;
+        returnValue.message = 'Product Deleted successfully';
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(200);
+        response.end(JSON.stringify(returnValue));
+    })
+    .catch((error) => {
+        console.log('error occured while Deleting product', error);
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(500);
+        response.end(JSON.stringify({
+            message: 'error occured'
+        }));
+    });
+}
+
 
 
 module.exports = {
-    productRouter
+    create,
+    findAll,
+    findOne,
+    update,
+    deleteProduct
+
 }

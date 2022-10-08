@@ -1,0 +1,6 @@
+7/10/2022
+
+1. revision by changing project structure
+2. primary and foriegn key
+3. classes -> inheritence(prototype), constructors, getter and setters
+5. Doubts.

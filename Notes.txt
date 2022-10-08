@@ -1,0 +1,19 @@
+7/10/2022
+
+1. changing the structure
+
+server.js -----> router (route to correct function) -----> controllers(request will hit and return) ----> service(business logic) ----> Database
+
+
+
+2. primary key
+
+uniquely define a specific row in table.
+only one primary key can be there
+
+3. foriegn key
+
+primary key of another table.
+used for joining two or more tables.
+
+

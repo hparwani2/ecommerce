@@ -1,10 +1,9 @@
-let { productSchema } = require("../models/product.model");
-let { categorySchema } = require("../models/category.model");
+let db = require("../models/index");
 
 class ProductService {
 
     constructor() {
-        this.schema = productSchema
+        this.schema = db.product;
     }
 
     createProduct(product) {
@@ -13,20 +12,15 @@ class ProductService {
         .create(product);
     }
 
-    getProducts(filters) {
-        filters['maxprice'] = Number(filters['maxprice']);
+    getProducts() {
+        //filters['maxprice'] = Number(filters['maxprice']);
 
         return this
         .schema
         .findAll({
-            where: {
-                price: {
-                    lte: 2000
-                }
-            },
             include: [{
                 required: true,
-                model: categorySchema
+                model: db.category
             }]
         });
     }
@@ -40,8 +34,29 @@ class ProductService {
             },
             include: [{
                 required: true,
-                model: categorySchema
+                model: db.category
             }]
+        });
+    }
+
+    updateProduct(updatedProduct, id) {
+        return this
+        .schema
+        .update(updatedProduct, {
+            returning: true,
+            where: {
+                id: id
+            }
+        })
+    }
+
+    deleteProductById(id) {
+        return this
+        .schema
+        .destroy({
+            where: {
+                id: id
+            }
         });
     }
 }
