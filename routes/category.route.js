@@ -10,11 +10,11 @@ module.exports = function(app){
     app.get("/ecomm/api/v1/categories", categoryController.findAll);
 
     //Route for the GET request to fetch a category based on the id
-    app.get("/ecomm/api/v1/categories/:id",[categoryValidator.validateProductId], categoryController.findOne);
+    app.get("/ecomm/api/v1/categories/:id",[categoryValidator.validateCategoryId], categoryController.findOne);
 
     //Route for the PUT request to update a category based on the id
-    app.put("/ecomm/api/v1/categories/:id",[categoryValidator.validateProductId, categoryValidator.validateRequestBody],categoryController.update);
+    app.put("/ecomm/api/v1/categories/:id",[categoryValidator.validateCategoryId, categoryValidator.validateRequestBody],categoryController.update);
 
     //Route for the DELETE request to delete a category based on the id
-    app.delete("/ecomm/api/v1/categories/:id",[categoryValidator.validateProductId], categoryController.deleteCategory);
+    app.delete("/ecomm/api/v1/categories/:id",[categoryValidator.validateCategoryId], categoryController.deleteCategory);
 }
