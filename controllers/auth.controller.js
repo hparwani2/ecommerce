@@ -25,6 +25,27 @@ function signUp(request, response) {
     });
 }
 
+function signIn(request, response) {
+    authService
+    .signIn(request.body.email, request.body.password)
+    .then((authResponse) => {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(200);
+        response.end(JSON.stringify(authResponse));
+    }).catch(error => {
+        if(!error.errorCode) {
+            error.errorCode = 500
+        }
+        console.log('Error Occurred while signing in', error);
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(error.errorCode);
+        response.end(JSON.stringify({
+            message: error.message
+        }));
+    });
+}
+
 module.exports = {
-    signUp
+    signUp,
+    signIn
 }

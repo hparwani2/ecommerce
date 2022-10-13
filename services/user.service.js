@@ -17,7 +17,7 @@ class UserService {
 
     findUserByEmail(email) {
         return this.schema
-        .findAll({
+        .findOne({
             where: {
                 email: email.toLowerCase()
             }

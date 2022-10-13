@@ -4,4 +4,6 @@ const authValidator = require('../validators/auth.validator');
 module.exports = function(app) {
     app.post('/ecomm/api/v1/auth/signup', [authValidator.checkMandatoryFields,
     authValidator.checkEmailDuplicate, authValidator.checkRolesExist], authController.signUp);
+
+    app.post('/ecomm/api/v1/auth/signin',[authValidator.checkMandatoryFieldsForSignIn], authController.signIn);
 }
