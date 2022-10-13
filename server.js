@@ -11,6 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 require('./routes/product.route')(app);
 require('./routes/category.route')(app);
+require('./routes/auth.route')(app);
 
 db.sequelize.sync({
     force: true
@@ -21,6 +22,15 @@ db.sequelize.sync({
 
 
 function init() {
+    let roles = [
+        {
+            name: 'admin'
+        },
+        {
+            name: 'user'
+        }
+    ];
+
     let categories = [
         {
             name: 'Electronics',
@@ -38,7 +48,18 @@ function init() {
         console.log("Categories table is initialized");
     }).catch(err => {
         console.log("Error while initializing ategories table");
+    });
+
+    db
+    .role
+    .bulkCreate(roles)
+    .then(() => {
+        console.log('Roles created successfully');
+    }).catch(err => {
+        console.log('error while creating roles');
     })
+
+
 }
 
 app.listen(serverConfig.PORT, () => {

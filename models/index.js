@@ -24,11 +24,27 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 let category = require('./category.model')(sequelize, Sequelize);
 let product = require('./product.model')(sequelize, Sequelize);
+let user = require('./user.model')(sequelize, Sequelize);
+let role = require('./role.model')(sequelize, Sequelize);
 
 category.hasMany(product);
 product.belongsTo(category);
 
+role.belongsToMany(user, {
+    through: 'user_roles',
+    foreignKey: 'roleId',
+    otherKey: 'userId'
+});
+
+user.belongsToMany(role, {
+    through: 'user_roles',
+    foreignKey: 'userId',
+    otherKey: 'roleId'
+});
+
 db.category = category;
 db.product = product;
+db.user = user;
+db.role = role;
 
 module.exports = db;

@@ -25,3 +25,11 @@ ManyToMany ----> Teacher <----> Students
 
 
 route -----> controllers(validations) ----> 
+
+
+
+user -- credentials --> frontend --------> backend. 
+backend --- Auth Token ---> frontend(auth 
+token as cookie) --- profile ---> user
+
+user -- cart --> frontend --- auth token ---> backend
