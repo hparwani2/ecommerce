@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 require('./routes/product.route')(app);
 require('./routes/category.route')(app);
 require('./routes/auth.route')(app);
+require('./routes/cart.route')(app);
 
 db.sequelize.sync({
     force: true
@@ -42,6 +43,27 @@ function init() {
         }
     ];
 
+    let products = [
+        {
+            name: 'iphone 14 pro max',
+            description: 'MAT KHAREEDO!!!!',
+            cost: '140000',
+            categoryId: 1
+        },
+        {
+            name: 'samsung s22',
+            description: 'device with a cool camera',
+            cost: '110000',
+            categoryId: 1
+        },
+        {
+            name: "Prestige Cooker",
+            description: "You can enjoy cooked meal with this applicance like rice, raajma, pulao, khichdi",
+            cost: "5000",
+            categoryId: 2
+        }
+    ]
+
     db.category
     .bulkCreate(categories)
     .then(() => {
@@ -57,8 +79,16 @@ function init() {
         console.log('Roles created successfully');
     }).catch(err => {
         console.log('error while creating roles');
-    })
+    });
 
+    db
+    .product
+    .bulkCreate(products)
+    .then(() => {
+        console.log('products added');
+    }).catch(error => {
+        console.error('error occurred while adding products', error);
+    })
 
 }
 

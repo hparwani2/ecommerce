@@ -39,6 +39,18 @@ class ProductService {
         
     }
 
+    getProductsById(ids) {
+        return this
+        .schema
+        .findAll({
+            where: {
+                id: {
+                    [db.Sequelize.Op.or]: ids
+                }
+            }
+        })
+    }
+
     getProductById(id) {
         return this
         .schema
