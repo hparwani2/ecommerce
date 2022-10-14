@@ -1,8 +1,7 @@
 let { userService } = require('./user.service');
 let { roleService } = require('./role.service');
-let authConfig = require('../configs/auth.config');
+let { jwtService } = require('./jwt.service');
 var bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
 
 class AuthService {
     // constructor() {
@@ -38,7 +37,7 @@ class AuthService {
             if(user) {
                 let isPasswordValid = bcrypt.compareSync(password, user.password);
                 if(!isPasswordValid) {
-                    Promise.reject({
+                    return Promise.reject({
                         errorCode: 401,
                         message: 'password is not valid'
                     });
@@ -50,11 +49,11 @@ class AuthService {
                         return role.name;
                     });
 
-                    let token = jwt.sign({ id: user.id, roles: roleNames }, 
-                        authConfig.SECRET, {
-                            expiresIn: authConfig.EXPIRY_TIME
-                        });
-                    
+                    let token = jwtService.createJwt({
+                        id: user.id,
+                        roles: roleNames
+                    });
+
                     return {
                         id: user.id,
                         email: user.email,
@@ -63,7 +62,7 @@ class AuthService {
                 });
 
             } else {
-                Promise.reject(
+                return Promise.reject(
                     {
                         errorCode: 401, 
                         message: 'user not found'

@@ -1,5 +1,6 @@
 let { userService } = require('../services/user.service');
 let { roleService } = require('../services/role.service');
+let { jwtService } = require('../services/jwt.service');
 
 function checkMandatoryFields(request, response, next) {
     if(!request.body.name) {
@@ -102,9 +103,59 @@ function checkRolesExist(request, response, next) {
     }
 }
 
+function verifyJwt(request, response, next) {
+    try {
+        let token = request.headers['x-access-token'];
+        let decoded = jwtService.verifyAndDecodeJwt(token);
+        if(decoded.validated) {
+            request.decodedJwt = decoded.decodedJwt;
+            next();
+        } else {
+            response.setHeader('content-type', 'application/json');
+            response.writeHead(401);
+            response.end(JSON.stringify({
+                message: decoded.message
+            }));
+            return;
+        }
+    } catch(error) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(401);
+        response.end(JSON.stringify({
+            message: error.message
+        }));
+        return;
+    }
+}
+
+function isAdmin(request, response, next) {
+    if(!request.decodedJwt) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(401);
+        response.end(JSON.stringify({
+            message: 'Decoded Jwt is not present for check'
+        }));
+        return;
+    }
+
+    let roles = request.decodedJwt.roles;
+    let adminRole = roles.filter((role) => role === 'admin');
+    if(adminRole.length === 0) {
+        response.setHeader('content-type', 'application/json');
+        response.writeHead(403);
+        response.end(JSON.stringify({
+            message: 'User cannot access this resource'
+        }));
+        return;
+    }
+    next();
+}
+
 module.exports = {
     checkEmailDuplicate,
     checkMandatoryFields,
     checkRolesExist,
-    checkMandatoryFieldsForSignIn
+    checkMandatoryFieldsForSignIn,
+    verifyJwt,
+    isAdmin
 }
