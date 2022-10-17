@@ -10,18 +10,18 @@ function create(request, response) {
         categoryId: request.body.categoryId
     };
 
-    productService
+    return productService
     .createProduct(product)
     .then((product) => {
         console.log('product inserted ', product.dataValues);
         let returnValue = product.dataValues;
         returnValue.message = 'Product inserted successfully';
-        response.setHeader('content-type', 'application/json');
+        // response.setHeader('content-type', 'application/json');
         response.writeHead(201);
         response.end(JSON.stringify(returnValue));
     }).catch((error) => {
         console.log('error occured while creating product', error);
-        response.setHeader('content-type', 'application/json');
+        // response.setHeader('content-type', 'application/json');
         response.writeHead(500);
         response.end(JSON.stringify({
             message: 'error occured'
