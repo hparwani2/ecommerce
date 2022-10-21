@@ -4,7 +4,7 @@ const authValidator = require("../validators/auth.validator");
 module.exports = function(app){
     
     //Route for the POST request to create the category
-    app.post("/ecomm/api/v1/categories", [ authValidator.verifyJwt, authValidator.isAdmin ] ,categoryController.create);
+    app.post("/ecomm/api/v1/categories" ,categoryController.create);
 
     //Route for the GET request to fetch all the categories
     app.get("/ecomm/api/v1/categories", categoryController.findAll);

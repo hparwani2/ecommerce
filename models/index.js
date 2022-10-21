@@ -1,13 +1,13 @@
-
-const config = require("../configs/db.config");
+const env = process.env.NODE_ENV || 'development'
+const config = require("../configs/db.config")[env];
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-    config.DB,
-    config.USER,
-    config.PASSWORD,
+    config.database,
+    config.username,
+    config.password,
     {
-        host: config.HOST,
+        host: config.host,
         dialect: config.dialect,
         operatorsAliases: false,
         pool: {

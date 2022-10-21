@@ -33,3 +33,12 @@ backend --- Auth Token ---> frontend(auth
 token as cookie) --- profile ---> user
 
 user -- cart --> frontend --- auth token ---> backend
+
+
+
+
+
+route -- validators --> controller ----> service ----> database(ecomm_test_db)
+
+supertest ---> test the routes, request and response.
+cross-env ----> 

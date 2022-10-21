@@ -1,14 +1,10 @@
 /*
     - express is a library that would be used for routing purposes. 
 */
-const express = require('express');
+const app = require('./app');
+const db = require('./models/index');
 const serverConfig = require('./configs/server.config');
 
-const bodyParser = require('body-parser');
-
-const db = require('./models/index');
-const app = express();
-app.use(bodyParser.json());
 require('./routes/product.route')(app);
 require('./routes/category.route')(app);
 require('./routes/auth.route')(app);
