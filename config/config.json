@@ -27,9 +27,9 @@
     },
     "production": {
         "host" : "sql6.freemysqlhosting.net",
-        "username" : "sql6528210",
-        "password" : "if6C7MIpjl",
-        "database" : "sql6528210",
+        "username" : "sql6528255",
+        "password" : "4KYdrEdyeY",
+        "database" : "sql6528255",
         "dialect" : "mysql",
         "pool" :{
             "max" :5,
